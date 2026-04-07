@@ -20,17 +20,16 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # الدخول لمجلد المشروع
-            cd ~/lab8-cicd
+            # التأكد من المسار الصحيح ( ubuntu هو اليوزر الافتراضي)
+            cd /home/ubuntu/lab8-cicd || cd ~/lab8-cicd
             
-            # سحب التعديلات الجديدة
-            git pull origin main
+            # تحديث الكود مع تجاهل أي تغييرات يدوية قديمة على السيرفر
+            git fetch --all
+            git reset --hard origin/main
             
-            # تنظيف أي حاويات قديمة لمنع التعارض
-            docker compose down
+            # إعادة تشغيل الحاويات بـ sudo لضمان الصلاحيات الكاملة
+            sudo docker-compose down
+            sudo docker-compose up -d --build
             
-            # بناء وتشغيل الحاويات بالنسخة الحديثة (V2)
-            docker compose up -d --build
-            
-            # التأكد من الحالة في الـ Logs (اختياري)
-            docker compose ps
+            # التأكد إن كل حاجة قايمة تمام
+            sudo docker-compose ps

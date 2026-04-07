@@ -6,11 +6,12 @@ const PORT = 3000;
 
 
 const tasks = [
-  { id: 1, name: 'Coffee for Lab 8',          status: 'done'    },
+  { id: 1, name: 'Milk',          status: 'done'    },
   { id: 2, name: 'Eggs',          status: 'done'    },
   { id: 3, name: 'Bread',         status: 'pending' },
   { id: 4, name: 'Butter',        status: 'pending' },
   { id: 5, name: 'Orange juice',  status: 'pending' },
+  { id: 7, name: 'Tea',           status: 'pending' }, // ضيفي السطر ده هنا
 ];
 
 // المسار الأول: معلومات عامة عن التطبيق والسيرفر

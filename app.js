@@ -1,24 +1,42 @@
-const mongoose = require('mongoose');
 const express = require('express');
+const os = require('os');
+
 const app = express();
+const PORT = 3000;
 
 
-const dbURI = process.env.DATABASE_URL || 'mongodb://db:27017/todolist';
-mongoose.connect(dbURI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.log(err));
+const tasks = [
+  { id: 1, name: 'Milk',          status: 'done'    },
+  { id: 2, name: 'Eggs',          status: 'done'    },
+  { id: 3, name: 'Bread',         status: 'pending' },
+  { id: 4, name: 'Butter',        status: 'pending' },
+  { id: 5, name: 'Orange juice',  status: 'pending' },
+];
 
-
-const taskSchema = new mongoose.Schema({
-  id: Number,
-  name: String,
-  status: String
+// المسار الأول: معلومات عامة عن التطبيق والسيرفر
+app.get('/', (req, res) => {
+  res.json({
+    app:  'CISC 886 Lab 8 - CI/CD',
+    mode: process.env.MODE || 'production',
+    node: process.version,
+    host: os.hostname(),
+  });
 });
-const Task = mongoose.model('Task', taskSchema);
 
-app.get('/tasks', async (req, res) => {
-  const tasks = await Task.find();
-  res.json(tasks);
+// المسار الثاني: عرض المهام مقسمة حسب الحالة (Done / Pending)
+app.get('/tasks', (req, res) => {
+  // التعديل هنا: استخدمنا filter بدل Object.groupBy عشان يشتغل على كل النسخ
+  const grouped = {
+    done: tasks.filter(task => task.status === 'done'),
+    pending: tasks.filter(task => task.status === 'pending')
+  };
+  res.json(grouped);
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(PORT, () => {
+  console.log('--------------------------------------------------');
+  console.log(`  CISC 886 Lab 8 — App started`);
+  console.log(`  Port:  ${PORT}`);
+  console.log(`  Host:  ${os.hostname()}`);
+  console.log('--------------------------------------------------');
+});
